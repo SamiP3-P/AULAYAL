@@ -1,4 +1,4 @@
-const CACHE_NAME = "aulaya-shell-v117";
+const CACHE_NAME = "aulaya-shell-v118";
 const APP_FILES = [
   "./", "./index.html", "./styles.css", "./app.js", "./games.js", "./question-bank.js", "./database.js", "./supabase-config.js",
   "./manifest.json", "./favicon.ico", "./teo-brain.js",

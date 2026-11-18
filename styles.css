@@ -551,3 +551,6 @@ body,button,input,select,textarea{font-family:'Fredoka',system-ui,sans-serif}
 .profile-avatar img.teo-bust{width:auto;height:205%;max-width:none;padding:0;border-radius:0;object-fit:fill;justify-self:center;margin-top:3px}
 .profile-avatar{display:block;position:relative;flex:0 0 44px}.profile-avatar img.teo-bust{position:absolute;left:50%;top:3px;height:205%;width:auto;transform:translateX(-50%);margin:0}
 .profile-avatar img.teo-bust{height:165%;top:2px}
+/* Docente: foto del estudiante = Teo con su ropa (cara y torso) */
+.stu-photo{position:relative;overflow:hidden;border-radius:50%;background:linear-gradient(180deg,#e3f3f7,#e7f1dd)!important;color:transparent}
+.stu-photo img.teo-bust{position:absolute;left:50%;top:2px;height:165%;width:auto;max-width:none;transform:translateX(-50%)}
