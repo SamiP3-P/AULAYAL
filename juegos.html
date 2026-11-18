@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AulaYa · Juegos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Fredoka,system-ui,sans-serif;background:#f3f6ef;color:#173b31}
+    header{background:linear-gradient(120deg,#1f6b3b,#2f8a4f);color:#fff;padding:18px 20px 22px}
+    header img{height:34px;filter:brightness(0) invert(1)}
+    header h1{margin:8px 0 2px;font-size:22px}
+    header p{margin:0;font-size:13px;opacity:.9}
+    main{display:grid;grid-template-columns:minmax(260px,360px) 1fr;gap:18px;padding:18px;max-width:1100px;margin:0 auto}
+    @media(max-width:760px){main{grid-template-columns:1fr}}
+    .tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px}
+    .tab{border:0;border-radius:999px;padding:7px 12px;font:700 12px Fredoka,system-ui;background:#fff;color:#1f6b3b;cursor:pointer;border:1px solid #d6e8d0}
+    .tab{text-decoration:none}.tab.on{background:#1f6b3b;color:#fff;border-color:#1f6b3b}
+    .list{display:grid;gap:8px}
+    .item{display:flex;align-items:center;gap:10px;width:100%;border:1px solid #e1ebdc;background:#fff;border-radius:14px;padding:10px;text-align:left;cursor:pointer;font-family:inherit;color:inherit}
+    .item.on{border-color:#ee6b3b;box-shadow:0 0 0 2px #ee6b3b33}
+    .item .ic img{width:38px;height:38px;object-fit:contain}
+    .item .ic{flex:0 0 42px;height:42px;border-radius:12px;background:#fff4cf;display:grid;place-items:center;font-size:22px}
+    .item b{display:block;font-size:13px}.item small{display:block;font-size:11px;color:#6f8275;margin-top:2px}
+    .stage{background:#fff;border:1px solid #e1ebdc;border-radius:20px;padding:16px;min-height:480px;max-width:430px;width:100%;justify-self:center}
+    .stage .meta{font-size:11px;color:#6f8275;margin:0 0 10px}
+    .empty{display:grid;place-items:center;min-height:420px;text-align:center;color:#6f8275}
+    .empty img{width:130px}
+    .count{font-size:11px;color:#6f8275;margin:4px 0 10px}
+  </style>
+  <link rel="icon" href="favicon.ico" sizes="any" />
+  <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon.png" />
+  <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+</head>
+<body>
+  <header>
+    <img src="assets/aulaya-logo-white.png" alt="Aula ya!">
+    <h1>Vista previa de los juegos</h1>
+    <p>Elige un grado y un tema para probar su juego tal como lo verán los estudiantes.</p>
+  </header>
+  <main>
+    <section>
+      <div class="tabs" id="tabs"></div>
+      <div class="count" id="count"></div>
+      <div class="list" id="list"></div>
+    </section>
+    <section class="stage" id="stage">
+      <div class="empty"><div><img src="assets/aulaya-mascot.png" alt=""><p>Elige un juego de la lista para empezar.</p></div></div>
+    </section>
+  </main>
+  <script src="games.js"></script>
+  <script>
+    const TOPICS = {
+      Primero: { 'Matemáticas': 'Suma', 'Lengua': 'El abecedario', 'Ciencias': 'Los seres vivos', 'Inglés': 'Los colores', 'Ciencias Sociales': 'La familia' },
+      Segundo: { 'Matemáticas': 'Resta', 'Lengua': 'Sustantivos', 'Ciencias': 'Las partes de la planta', 'Inglés': 'Los animales', 'Ciencias Sociales': 'La comunidad' },
+      Tercero: { 'Matemáticas': 'Multiplicación', 'Lengua': 'El cuento', 'Ciencias': 'Los ecosistemas', 'Inglés': 'Los números', 'Ciencias Sociales': 'El municipio' },
+      Cuarto: { 'Matemáticas': 'División', 'Lengua': 'El adjetivo', 'Ciencias': 'Los estados de la materia', 'Inglés': 'Las partes del cuerpo', 'Ciencias Sociales': 'Las regiones naturales de Colombia' },
+      Quinto: { 'Matemáticas': 'Fracciones', 'Lengua': 'El texto argumentativo', 'Ciencias': 'El sistema digestivo', 'Inglés': 'Presente simple', 'Ciencias Sociales': 'La Independencia de Colombia' }
+    };
+    const params = new URLSearchParams(location.search), fixedGrade = TOPICS[params.get('grado')] ? params.get('grado') : null;
+    let grade = fixedGrade || 'Primero', current = null, active = '';
+    if (fixedGrade) { document.querySelector('header h1').textContent = `Juegos de ${fixedGrade}`; document.querySelector('header p').textContent = `Solo los juegos de ${fixedGrade}: un juego por materia.`; document.title = `AulaYa · Juegos de ${fixedGrade}`; }
+    const tabs = document.getElementById('tabs'), list = document.getElementById('list'), stage = document.getElementById('stage');
+    function drawTabs() {
+      if (fixedGrade) { tabs.innerHTML = `<a class="tab" href="juegos.html">← Ver todos los grados</a>`; return; }
+      tabs.innerHTML = Object.keys(TOPICS).map(g => `<button class="tab ${g === grade ? 'on' : ''}" data-g="${g}">${g}</button>`).join('');
+      tabs.querySelectorAll('.tab').forEach(b => b.onclick = () => { grade = b.dataset.g; drawTabs(); drawList(); });
+    }
+    function drawList() {
+      const entries = Object.entries(TOPICS[grade]);
+      document.getElementById('count').innerHTML = fixedGrade ? `${entries.length} juegos de ${grade}` : `${entries.length} juegos de ${grade} · <a href="juegos.html?grado=${grade}" style="color:#1f6b3b;font-weight:700">abrir solo ${grade} ↗</a>`;
+      list.innerHTML = entries.map(([subject, topic]) => {
+        const g = window.AulaGames.get(grade, subject);
+        return `<button class="item ${active === grade + subject ? 'on' : ''}" data-s="${subject}"><span class="ic">${g.icon}</span><span><b>${g.title}</b><small>${subject} · ${topic} · ${g.kind}</small></span></button>`;
+      }).join('');
+      list.querySelectorAll('.item').forEach(b => b.onclick = () => open(b.dataset.s));
+    }
+    function open(subject) {
+      if (current) current.destroy();
+      active = grade + subject; drawList();
+      const g = window.AulaGames.get(grade, subject);
+      stage.innerHTML = `<p class="meta">${grade} · ${subject} · ${TOPICS[grade][subject]}</p><div id="game"></div>`;
+      current = window.AulaGames.mount(document.getElementById('game'), g, { onExit: () => { stage.innerHTML = '<div class="empty"><div><img src="assets/aulaya-mascot.png" alt=""><p>Elige otro juego de la lista.</p></div></div>'; active = ''; drawList(); } });
+      if (window.innerWidth < 760) stage.scrollIntoView({ behavior: 'smooth' });
+    }
+    drawTabs(); drawList();
+  </script>
+</body>
+</html>
