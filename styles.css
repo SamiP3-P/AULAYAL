@@ -498,3 +498,51 @@ body,button,input,select,textarea{font-family:'Fredoka',system-ui,sans-serif}
 /* Vista previa sin etiqueta ni globito (pedido 17-nov) */
 .preview-bubble,.preview-tag{display:none!important}
 .wear-item .shop-art .ropa-art{max-height:50px;max-width:82%;width:auto;height:auto}
+
+/* ==========================================================
+   ADAPTABLE: celular (<600) · iPad / tablet (600–1099) · computador (≥1100)
+   ========================================================== */
+@media (min-width:600px) and (max-width:1099px){
+  html{zoom:1.2}
+  body{padding:0}
+  .phone-app{width:100%;max-width:none;min-height:100dvh;border-radius:0;box-shadow:none}
+  .app-header{border-radius:0}
+  .bottom-nav,.teacher-nav{width:100%;bottom:0;border-radius:0}
+  .modal-sheet{width:min(100%,560px)}
+  .page{padding-left:24px;padding-right:24px}
+  .teacher-page{padding-left:24px;padding-right:24px}
+  .shop-grid{grid-template-columns:repeat(4,1fr)}
+  .hero{height:300px}
+  .mascot{width:190px;height:260px;bottom:-60px}
+  .custom-hero{height:300px}.custom-hero .custom-mascot{height:280px}
+  .profile-banner{height:260px}.profile-banner .custom-mascot{height:236px}
+}
+@media (min-width:1100px){
+  html{zoom:1.12}
+  body{padding:22px 0;background:#eef1e7}
+  .phone-app{--side:210px;width:calc(100% - 44px);max-width:1180px;min-height:calc(100dvh - 44px);border-radius:24px;overflow:visible;box-shadow:0 10px 40px #173b3114}
+  .phone-app:has(>.bottom-nav),.phone-app:has(>.teacher-nav){display:grid;grid-template-columns:var(--side) minmax(0,1fr);grid-auto-rows:min-content;align-content:start;padding-bottom:28px}
+  .phone-app:has(>.bottom-nav)>*,.phone-app:has(>.teacher-nav)>*{grid-column:2}
+  .phone-app:has(>.bottom-nav)>header,.phone-app:has(>.teacher-nav)>header{grid-column:1/-1;grid-row:1}
+  .app-header,.phone-app>header{border-radius:24px 24px 0 0}
+  /* barra de navegación -> menú lateral fijo al hacer scroll */
+  .phone-app>.bottom-nav,.phone-app>.teacher-nav{grid-column:1;grid-row:2/span 30;align-self:start;position:sticky;top:16px;left:auto;bottom:auto;transform:none;width:auto;height:auto;flex-direction:column;justify-content:flex-start;align-items:stretch;gap:6px;margin:12px 0 0 14px;padding:10px;border:1px solid #edf0e8;border-radius:18px;box-shadow:0 4px 16px #244b330d;background:#fff}
+  .bottom-nav .nav-button,.teacher-nav button{flex-direction:row;justify-content:flex-start;gap:12px;height:48px;min-width:0;width:100%;padding:0 14px;border-radius:13px;font-size:13px}
+  .bottom-nav .nav-button .nav-glyph,.teacher-nav button span{font-size:22px;width:28px;display:grid;place-items:center}
+  .nav-count{position:static;margin-left:auto}
+  .page{padding:16px 32px 32px}
+  .teacher-page{padding:16px 32px 32px}
+  .hero{height:320px;margin:4px 0 22px}
+  .mascot{width:200px;height:270px;bottom:-62px}
+  .subject-grid{grid-template-columns:repeat(5,1fr)}.subject-grid .subject{grid-column:auto!important;min-height:110px}
+  .shop-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px}
+  .custom-hero{height:340px}.custom-hero .custom-mascot{height:318px}
+  .profile-banner{height:300px}.profile-banner .custom-mascot{height:276px}
+  .profile-summary{grid-template-columns:repeat(3,1fr)}
+  .modal-scrim{align-items:center}.modal-sheet{width:min(100% - 40px,520px);border-radius:22px}
+  .toast{bottom:40px}
+  .scroll-helper{display:none}
+}
+@media (min-width:1100px){.teacher-shortcuts{grid-template-columns:repeat(4,1fr)!important}}
+@media (max-width:599px){.profile-banner{margin-left:-4px;margin-right:-4px}}
+@media (min-width:600px){.role-options{max-width:600px;margin-left:auto!important;margin-right:auto!important;width:100%}.auth-entry,.auth-shell{max-width:620px;margin-left:auto;margin-right:auto}}
