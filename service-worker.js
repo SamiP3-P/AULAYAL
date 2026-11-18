@@ -1,4 +1,4 @@
-const CACHE_NAME = "aulaya-shell-v116";
+const CACHE_NAME = "aulaya-shell-v117";
 const APP_FILES = [
   "./", "./index.html", "./styles.css", "./app.js", "./games.js", "./question-bank.js", "./database.js", "./supabase-config.js",
   "./manifest.json", "./favicon.ico", "./teo-brain.js",
@@ -12,7 +12,7 @@ const APP_FILES = [
   "./assets/personalizcionsam.png", "./assets/ropa-camiseta-verde.png", "./assets/teo-camiseta-equipo.png", "./assets/teo-acc-gorra.png", "./assets/teo-acc-gafas.png", "./assets/teo-acc-audifonos.png", "./assets/teo-acc-mochila.png", "./assets/teo-acc-reloj.png", "./assets/acc-gorra.png", "./assets/acc-gafas.png", "./assets/acc-audifonos.png", "./assets/acc-mochila.png", "./assets/acc-reloj.png", "./assets/teo-camiseta-brote.png", "./assets/teo-camiseta-manchas.png", "./assets/teo-buzo-huellita.png", "./assets/teo-buzo-selva.png", "./assets/teo-chaqueta-explorador.png", "./assets/teo-chaqueta-campeon.png", "./assets/ropa-camiseta-hojita.png", "./assets/ropa-camiseta-jaguar.png", "./assets/ropa-buzo-huella.png", "./assets/ropa-buzo-verde.png", "./assets/ropa-chaqueta-aulaya.png", "./assets/ropa-chaqueta-universitaria.png"
 ];
 self.addEventListener("install", (event) => {
-  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES)).then(() => self.skipWaiting()));
+  event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(APP_FILES.map((url) => new Request(url, { cache: 'reload' })))).then(() => self.skipWaiting()));
 });
 self.addEventListener("activate", (event) => {
   event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter((key) => key.startsWith("aulaya-shell-") && key !== CACHE_NAME).map((key) => caches.delete(key)))).then(() => self.clients.claim()));
@@ -27,6 +27,16 @@ self.addEventListener("fetch", (event) => {
     return;
   }
   if (request.method !== "GET" || new URL(request.url).origin !== self.location.origin) return;
+  // Código y páginas: primero internet (siempre la versión nueva); sin internet, la copia guardada.
+  const path = new URL(request.url).pathname;
+  if (request.mode === "navigate" || /\.(js|css|html|json)$/.test(path) || path.endsWith("/")) {
+    event.respondWith(fetch(request, { cache: "no-cache" }).then((response) => {
+      if (response.ok) { const copy = response.clone(); caches.open(CACHE_NAME).then((cache) => cache.put(request, copy)); }
+      return response;
+    }).catch(() => caches.match(request, { ignoreSearch: true }).then((cached) => cached || (request.mode === "navigate" ? caches.match("./index.html") : Response.error()))));
+    return;
+  }
+  // Imágenes y demás: primero la copia guardada (rápido y sin internet).
   event.respondWith(caches.match(request).then((cached) => cached || fetch(request).then((response) => {
     if (response.ok) caches.open(CACHE_NAME).then((cache) => cache.put(request, response.clone()));
     return response;
